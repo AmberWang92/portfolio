@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xinyue Wang - Resume & Portfolio</title>
+    <style>
+        /* --- 1. 全局变量与重置 (CSS Variables & Reset) --- */
+        :root {
+            --primary-color: #2c3e50;
+            /* 主色调：深蓝灰 */
+            --accent-color: #3498db;
+            /* 强调色：亮蓝 */
+            --text-color: #333333;
+            /* 正文颜色 */
+            --bg-color: #ffffff;
+            /* 背景色 */
+            --light-bg: #f9f9f9;
+            /* 浅灰背景，用于区分板块 */
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --spacing-unit: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--bg-color);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- 2. 通用布局类 (Layout Utilities) --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-unit);
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            color: var(--primary-color);
+            position: relative;
+        }
+
+        /* 标题下的小装饰线 */
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--accent-color);
+            margin: 15px auto 0;
+        }
+
+        /* --- 3. 导航栏 (Navigation) --- */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* --- 4. Hero 区域 (Hero Section) --- */
+        .hero {
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--accent-color);
+            color: #fff;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        /* --- 5. 关于我 (About) --- */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 300px;
+            background-color: #ddd;
+            /* 占位符背景 */
+            border-radius: 10px;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+        }
+
+        /* --- 6. 简历/经历 (Resume/Timeline) --- */
+        .bg-light {
+            background-color: var(--light-bg);
+        }
+
+        .resume-item {
+            border-left: 3px solid var(--accent-color);
+            padding-left: 20px;
+            margin-bottom: 40px;
+        }
+
+        .resume-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .resume-item .date {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* --- 7. 作品集 (Portfolio Grid) --- */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-img {
+            height: 200px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+        }
+
+        .project-info {
+            padding: 20px;
+        }
+
+        .project-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .project-info a {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* --- 8. 页脚 (Footer) --- */
+        footer {
+            background: var(--primary-color);
+            color: #fff;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        /* --- 移动端适配 (Responsive) --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            /* 简单处理：手机端隐藏菜单，实际开发可加汉堡菜单 */
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">Xinyue Wang</a>
+                <ul class="nav-links">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#resume">Resume</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero 区域 -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Hello, I'm Xinyue Wang</h1>
+            <p>Designer / Developer / Creative</p>
+            <a href="#portfolio" class="btn">View My Work</a>
+        </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section id="about" class="container">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+            <!-- Placeholder: Please replace src with your real photo path -->
+            <div class="profile-img">
+                <img src="https://via.placeholder.com/400x400?text=Photo" alt="Xinyue Wang"
+                    style="width:100%; height:100%; object-fit:cover; border-radius:10px;">
+            </div>
+            <div>
+                <p>This is your personal bio. You can introduce your background, the fields you are passionate about,
+                    and your career goals. For example:</p>
+                <br>
+                <p>I am a passionate designer focusing on user experience and visual communication. I love solving
+                    complex problems through design and creating digital products that are both beautiful and
+                    functional. Over the past few years, I have participated in multiple cross-platform projects...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 简历 / 经历 -->
+    <section id="resume" class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Experience & Education</h2>
+
+            <div class="resume-item">
+                <h3>Senior Designer | Tech Company</h3>
+                <span class="date">2021 - Present</span>
+                <p>Responsible for the UI/UX design of core products, led the redesign of the mobile App, increasing
+                    user retention by 20%.</p>
+            </div>
+
+            <div class="resume-item">
+                <h3>Master of Interaction Design | University Name</h3>
+                <span class="date">2018 - 2021</span>
+                <p>Majored in Human-Computer Interaction, with a thesis focusing on the application of Augmented Reality
+                    in education.</p>
+            </div>
+
+            <div class="resume-item">
+                <h3>Visual Design Intern | Creative Studio</h3>
+                <span class="date">2017 - 2018</span>
+                <p>Assisted senior designers in building brand visual identity systems.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品集 -->
+    <section id="portfolio" class="container">
+        <h2 class="section-title">Selected Works</h2>
+        <div class="portfolio-grid">
+            <!-- Project 1 -->
+            <article class="project-card">
+                <div class="project-img">
+                    <img src="https://via.placeholder.com/600x400?text=Project+1" alt="Project 1"
+                        style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div class="project-info">
+                    <h3>Project Title A</h3>
+                    <p>Brief project description. What problem did this project solve? What technologies or tools did
+                        you use?</p>
+                    <br>
+                    <a href="#">View Details &rarr;</a>
+                </div>
+            </article>
+
+            <!-- Project 2 -->
+            <article class="project-card">
+                <div class="project-img">
+                    <img src="https://via.placeholder.com/600x400?text=Project+2" alt="Project 2"
+                        style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div class="project-info">
+                    <h3>Project Title B</h3>
+                    <p>This is a branding project, including Logo design, VI manual, and merchandise design.</p>
+                    <br>
+                    <a href="#">View Details &rarr;</a>
+                </div>
+            </article>
+
+            <!-- Project 3 -->
+            <article class="project-card">
+                <div class="project-img">
+                    <img src="https://via.placeholder.com/600x400?text=Project+3" alt="Project 3"
+                        style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div class="project-info">
+                    <h3>Project Title C</h3>
+                    <p>Web development project, built a real-time data visualization platform using React and Node.js.
+                    </p>
+                    <br>
+                    <a href="#">View Details &rarr;</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer id="contact">
+        <div class="container">
+            <h2>Contact Me</h2>
+            <p style="margin: 20px 0;">If you are interested in collaboration or want to chat about design, feel free to
+                contact me!</p>
+            <p>Email: xinyue.wang@example.com</p>
+            <p style="margin-top: 20px; font-size: 0.8rem; opacity: 0.7;">&copy; 2024 Xinyue Wang. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
