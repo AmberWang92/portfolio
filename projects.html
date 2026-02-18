@@ -68,23 +68,47 @@
             background: #f5f5f7;
             border-radius: 50px;
             padding: 4px;
+            position: relative;
+            align-items: center;
+            list-style: none;
         }
 
         .nav-links a {
             padding: 10px 24px;
             border-radius: 50px;
-            transition: all 0.3s ease;
+            transition: color 0.25s ease;
             font-size: 0.95rem;
             color: #1d1d1f;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         .nav-links a:hover {
-            background: rgba(0, 0, 0, 0.04);
+            color: #000;
         }
 
         .nav-links a.active {
-            background: #1d1d1f;
             color: #fff;
+        }
+
+        .nav-indicator {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            left: 0;
+            width: 0;
+            border-radius: 999px;
+            background: #1d1d1f;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease;
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .back-link {
@@ -148,9 +172,10 @@
             padding: 12px 30px;
             background: var(--primary-color);
             color: white;
-            border-radius: 5px;
+            border-radius: 15px;
             font-weight: bold;
-            transition: transform 0.3s, background 0.3s;
+            transition: transform 0.3s, background 0.3s, border 0.3s;
+            border: 3px solid transparent;
         }
 
         .game-link-btn:hover {
@@ -159,7 +184,26 @@
         }
 
         .game-link-btn.steam {
-            background: #171a21;
+            background: transparent;
+            border-radius: 20px;
+            color: #000;
+        }
+
+        .game-link-btn.steam:hover {
+            border: 3px solid #66c0f4;
+            background: transparent;
+            transform: translateY(-2px);
+        }
+
+        .game-link-btn img {
+            transition: transform 0.3s ease;
+            object-fit: contain;
+            width: 50px;
+            height: 50px;
+        }
+
+        .game-link-btn:hover img {
+            transform: scale(1.2);
         }
 
         .game-link-btn.itch {
@@ -241,6 +285,18 @@
             text-align: center;
         }
 
+        .diagram-wrapper {
+            margin: 50px 0;
+        }
+
+        .diagram-wrapper iframe {
+            width: 100%;
+            min-height: 480px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
         .code-section {
             padding: 60px 0;
             background: var(--light-bg);
@@ -309,6 +365,7 @@
                     <li><a href="index.html#resume">Resume</a></li>
                     <li><a href="index.html#portfolio" class="active">Portfolio</a></li>
                     <li><a href="index.html#contact">Contact</a></li>
+                    <span class="nav-indicator" aria-hidden="true"></span>
                 </ul>
             </nav>
         </div>
@@ -336,32 +393,16 @@
         <section class="project-header">
             <div class="container">
                 <h1 class="project-title">Until the Fields: Farmageddon</h1>
-                <p class="project-subtitle">A 3D Platformer Puzzle Game</p>
 
                 <div class="tags-container">
                     <span class="tag">Unity</span>
                     <span class="tag">C#</span>
-                    <span class="tag">3D Modeling</span>
-                    <span class="tag">Game Design</span>
-                    <span class="tag">Level Design</span>
-                    <span class="tag">Puzzle Mechanics</span>
+                    <span class="tag">3D Puzzle Platformer</span>
                 </div>
 
                 <div class="game-links">
-                    <a href="https://store.steampowered.com/your-game" target="_blank" class="game-link-btn steam">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-                        </svg>
-                        Play on Steam
-                    </a>
-                    <a href="https://your-username.itch.io/your-game" target="_blank" class="game-link-btn itch">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L19.82 8 12 11.82 4.18 8 12 4.18zM4 9.82l7 3.5v6.86l-7-3.5V9.82zm16 0v6.86l-7 3.5v-6.86l7-3.5z" />
-                        </svg>
-                        Play on Itch.io
-                    </a>
+                    <iframe src="https://store.steampowered.com/widget/4129640/" frameborder="0" width="646"
+                        height="190"></iframe>
                 </div>
             </div>
         </section>
@@ -371,23 +412,38 @@
                 <h2 class="section-heading">About the Project</h2>
                 <div class="description-text">
                     <p>
-                        Until the Fields: Farmageddon is a single-player 3D platformer puzzle game developed by a team
-                        of six women over three and a half months. The game combines challenging platforming mechanics
-                        with intricate puzzle-solving elements, creating an engaging and immersive experience.
+                        Until the Fields: Farmageddon is a <strong>3D single-player puzzle platformer</strong> adventure
+                        where
+                        you swap
+                        between 3 animals:
+                        mouse, spider and cow — each with their own personality and tricks — Our heroes must
+                        cooperate
+                        to solve puzzles and escape the storm-wrecked barn!
                     </p>
                     <br>
                     <p>
-                        Players navigate through beautifully crafted farm environments, solving puzzles and overcoming
-                        obstacles to progress through the story. The game features unique mechanics that blend
-                        traditional platforming with innovative puzzle design, offering a fresh take on the genre.
+                        The game is a student project developed by a team of <strong>6 women</strong> over <strong>3.5
+                            months</strong>.
                     </p>
                     <br>
+
+                </div>
+
+                <h2 class="section-heading">My Contributions</h2>
+                <div class="description-text">
                     <p>
-                        As the [Your Role - e.g., Lead Designer/Programmer], I was responsible for [describe your
-                        specific contributions - e.g., designing core gameplay mechanics, implementing the puzzle
-                        system, creating level layouts, etc.]. This project taught me valuable lessons about team
-                        collaboration, iterative design, and the importance of player feedback.
+
+                        Managed <strong>Steam deployment</strong> workflow (store page setup, build uploads, version
+                        control, testing
+                        branches)
                     </p>
+                </div>
+
+                <h2 class="section-heading">Technical Design Diagram</h2>
+                <div class="diagram-wrapper">
+                    <iframe
+                        src="https://app.diagrams.net/#G1ntcRY-IghIe0W3kTKUGW9XI1bzKW2Dx9#%7B%22pageId%22%3A%22sPX0HjRt7P7a30QzXF_5%22%7D"
+                        title="Technical Design Diagram" loading="lazy"></iframe>
                 </div>
 
                 <h2 class="section-heading">Screenshots</h2>
@@ -499,6 +555,47 @@ public class PuzzleElement : MonoBehaviour
             </p>
         </div>
     </footer>
+
+    <script>
+        (function () {
+            const nav = document.querySelector('header .nav-links');
+            if (!nav) return;
+
+            const links = Array.from(nav.querySelectorAll('a'));
+            const indicator = nav.querySelector('.nav-indicator');
+
+            function moveIndicatorTo(link) {
+                if (!indicator || !link) return;
+                requestAnimationFrame(() => {
+                    const navRect = nav.getBoundingClientRect();
+                    const linkRect = link.getBoundingClientRect();
+                    indicator.style.width = `${linkRect.width}px`;
+                    indicator.style.transform = `translateX(${linkRect.left - navRect.left}px)`;
+                    indicator.style.opacity = '1';
+                });
+            }
+
+            links.forEach(a => {
+                a.addEventListener('click', () => {
+                    links.forEach(link => link.classList.remove('active'));
+                    a.classList.add('active');
+                    moveIndicatorTo(a);
+                });
+            });
+
+            const initialActive = nav.querySelector('a.active') || links[0];
+            if (initialActive) {
+                moveIndicatorTo(initialActive);
+            }
+
+            window.addEventListener('resize', () => {
+                const current = nav.querySelector('a.active');
+                if (current) {
+                    moveIndicatorTo(current);
+                }
+            });
+        })();
+    </script>
 
 </body>
 

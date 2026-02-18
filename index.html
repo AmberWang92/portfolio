@@ -35,6 +35,10 @@
             background-color: var(--bg-color);
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         a {
             text-decoration: none;
             color: inherit;
@@ -102,23 +106,46 @@
             background: #f5f5f7;
             border-radius: 50px;
             padding: 4px;
+            position: relative;
+            align-items: center;
         }
 
         .nav-links a {
             padding: 10px 24px;
             border-radius: 50px;
-            transition: all 0.3s ease;
+            transition: color 0.25s ease;
             font-size: 0.95rem;
             color: #1d1d1f;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         .nav-links a:hover {
-            background: rgba(0, 0, 0, 0.04);
+            color: #000;
         }
 
         .nav-links a.active {
-            background: #1d1d1f;
             color: #fff;
+        }
+
+        .nav-indicator {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            left: 0;
+            width: 0;
+            border-radius: 999px;
+            background: #1d1d1f;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease;
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none;
         }
 
         /* --- 4. Hero 区域 (Hero Section) --- */
@@ -279,6 +306,7 @@
                     <li><a href="#resume">Resume</a></li>
                     <li><a href="#portfolio">Portfolio</a></li>
                     <li><a href="#contact">Contact</a></li>
+                    <span class="nav-indicator" aria-hidden="true"></span>
                 </ul>
             </nav>
         </div>
@@ -398,6 +426,78 @@
             </p>
         </div>
     </footer>
+
+    <script>
+        (function () {
+            const nav = document.querySelector('header .nav-links');
+            if (!nav) return;
+
+            const links = Array.from(nav.querySelectorAll('a[href^="#"]'));
+            const indicator = nav.querySelector('.nav-indicator');
+            const sections = links
+                .map(a => document.querySelector(a.getAttribute('href')))
+                .filter(Boolean);
+
+            function moveIndicatorTo(link) {
+                if (!indicator || !link) return;
+                requestAnimationFrame(() => {
+                    const navRect = nav.getBoundingClientRect();
+                    const linkRect = link.getBoundingClientRect();
+                    indicator.style.width = `${linkRect.width}px`;
+                    indicator.style.transform = `translateX(${linkRect.left - navRect.left}px)`;
+                    indicator.style.opacity = '1';
+                });
+            }
+
+            function setActiveById(id) {
+                let activeLink = null;
+                links.forEach(a => {
+                    const target = a.getAttribute('href').slice(1);
+                    const isActive = target === id;
+                    a.classList.toggle('active', isActive);
+                    if (isActive) activeLink = a;
+                });
+                if (activeLink) {
+                    moveIndicatorTo(activeLink);
+                }
+            }
+
+            links.forEach(a => {
+                a.addEventListener('click', () => {
+                    const id = a.getAttribute('href').slice(1);
+                    setActiveById(id);
+                });
+            });
+
+            const initialActive = nav.querySelector('a.active') || links[0];
+            if (initialActive) {
+                moveIndicatorTo(initialActive);
+            }
+
+            window.addEventListener('resize', () => {
+                const current = nav.querySelector('a.active');
+                if (current) {
+                    moveIndicatorTo(current);
+                }
+            });
+
+            if ('IntersectionObserver' in window && sections.length) {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        const visible = entries
+                            .filter(e => e.isIntersecting)
+                            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+                        if (visible && visible.target && visible.target.id) {
+                            setActiveById(visible.target.id);
+                        }
+                    },
+                    { root: null, threshold: [0.25, 0.5, 0.75], rootMargin: '-20% 0px -60% 0px' }
+                );
+
+                sections.forEach(s => observer.observe(s));
+            }
+        })();
+    </script>
 
 </body>
 
