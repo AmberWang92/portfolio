@@ -297,6 +297,139 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
+        /* Accordion (My Contributions) */
+        .accordion {
+            margin: 20px 0 40px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .accordion-item {
+            background: #f5f5f7;
+            border: 1px solid #e5e5ea;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 18px;
+            cursor: pointer;
+            color: #1d1d1f;
+            font-weight: 600;
+            font-size: 1.15rem;
+            background: transparent;
+            border: none;
+            text-align: left;
+        }
+
+        .accordion-header:hover {
+            background: #eef6ff;
+        }
+
+        .accordion-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accordion-icon {
+            font-size: 20px;
+            line-height: 1;
+            transition: transform 0.25s ease;
+        }
+
+        .accordion-content {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.35s ease;
+            background: #fff;
+            padding: 0 18px;
+            /* keep horizontal padding static to avoid jump */
+        }
+
+        /* Optional: Avoid unexpected top margin jump of first child */
+        .accordion-content> :first-child {
+            margin-top: 16px;
+        }
+
+        .accordion-content> :last-child {
+            margin-bottom: 16px;
+        }
+
+        /* Make list items slightly smaller than headers for hierarchy */
+        .accordion-content li {
+            font-size: 0.98rem;
+        }
+
+        /* Increase left indent for lists inside accordion content */
+        .accordion-content ul {
+            padding-left: 28px;
+        }
+
+        /* open state no longer relies on max-height/padding transitions; handled by JS */
+
+        .accordion-item.open .accordion-icon {
+            transform: rotate(45deg);
+        }
+
+        /* Sub-accordion inside a panel */
+        .sub-accordion {
+            margin-top: 12px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .sub-item {
+            background: #fff;
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .sub-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            cursor: pointer;
+            color: #1d1d1f;
+            font-weight: 600;
+            font-size: 1.0rem;
+            background: #f5f5f7;
+            border: none;
+            text-align: left;
+        }
+
+        .sub-header:hover {
+            background: #eef6ff;
+        }
+
+        .sub-icon {
+            transition: transform 0.25s ease;
+        }
+
+        .sub-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.25s ease;
+            background: #fff;
+            padding: 0 14px;
+        }
+
+        .sub-item.open .sub-content {
+            max-height: 600px;
+            padding: 12px 14px 14px;
+        }
+
+        .sub-item.open .sub-icon {
+            transform: rotate(45deg);
+        }
+
         .code-section {
             padding: 60px 0;
             background: var(--light-bg);
@@ -430,21 +563,67 @@
                 </div>
 
                 <h2 class="section-heading">My Contributions</h2>
-                <div class="description-text">
-                    <p>
+                <div class="accordion" id="contrib-accordion">
+                    <div class="accordion-item">
+                        <button class="accordion-header" aria-expanded="false">
+                            <span class="accordion-title">Lead Programmer</span>
+                            <span class="accordion-icon">+</span>
+                        </button>
+                        <div class="accordion-content">
+                            <ul>
+                                <li>Core gameplay architecture and systems integration</li>
+                                <li>Performance profiling and optimization passes</li>
+                                <li>Tooling for faster content iteration</li>
+                            </ul>
+                            <div class="sub-accordion">
+                                <div class="sub-item">
+                                    <button class="sub-header" aria-expanded="false">
+                                        <span>Technical Design Diagram</span>
+                                        <span class="sub-icon">+</span>
+                                    </button>
+                                    <div class="sub-content">
 
-                        Managed <strong>Steam deployment</strong> workflow (store page setup, build uploads, version
-                        control, testing
-                        branches)
-                    </p>
+                                        <!-- draw.io diagram -->
+                                        <div class="mxgraph" style="max-width:100%;border:1px solid transparent;"
+                                            data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;dark-mode&quot;:&quot;auto&quot;,&quot;toolbar&quot;:&quot;zoom layers tags lightbox&quot;,&quot;edit&quot;:&quot;_blank&quot;,&quot;xml&quot;:&quot;&lt;mxfile host=\&quot;app.diagrams.net\&quot; agent=\&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\&quot; version=\&quot;29.4.0\&quot;&gt;\n  &lt;diagram name=\&quot;第 1 页\&quot; id=\&quot;sPX0HjRt7P7a30QzXF_5\&quot;&gt;\n    &lt;mxGraphModel dx=\&quot;3980\&quot; dy=\&quot;3339\&quot; grid=\&quot;1\&quot; gridSize=\&quot;10\&quot; guides=\&quot;1\&quot; tooltips=\&quot;1\&quot; connect=\&quot;1\&quot; arrows=\&quot;1\&quot; fold=\&quot;1\&quot; page=\&quot;1\&quot; pageScale=\&quot;1\&quot; pageWidth=\&quot;827\&quot; pageHeight=\&quot;1169\&quot; math=\&quot;0\&quot; shadow=\&quot;0\&quot;&gt;\n      &lt;root&gt;\n        &lt;mxCell id=\&quot;0\&quot; /&gt;\n        &lt;mxCell id=\&quot;1\&quot; parent=\&quot;0\&quot; /&gt;\n        &lt;mxCell id=\&quot;VIrCqAISFI-Iv6n2z463-31\&quot; parent=\&quot;1\&quot; style=\&quot;shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;\&quot; value=\&quot;\&quot; vertex=\&quot;1\&quot;&gt;\n          &lt;mxGeometry height=\&quot;540\&quot; width=\&quot;1210\&quot; x=\&quot;-460\&quot; y=\&quot;480\&quot; as=\&quot;geometry\&quot; /&gt;\n        &lt;/mxCell&gt;\n        &lt;mxCell id=\&quot;GV3LY6IxdiBlDHp-VR2O-3\&quot; parent=\&quot;1\&quot; style=\&quot;swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;\&quot; value=\&quot;&amp;lt;p style=&amp;quot;margin: 0px; font-style: normal; font-variant-caps: normal; font-width: normal; line-height: normal; font-size-adjust: none; font-kerning: auto; font-variant-alternates: normal; font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-position: normal; font-feature-settings: normal; font-optical-sizing: auto; font-variation-settings: normal;&amp;quot;&amp;gt;CharacterBase&amp;lt;/p&amp;gt;\&quot; vertex=\&quot;1\&quot;&gt;\n          &lt;mxGeometry height=\&quot;146\&quot; width=\&quot;270\&quot; x=\&quot;150\&quot; y=\&quot;-30\&quot; as=\&quot;geometry\&quot; /&gt;\n        &lt;/mxCell&gt;\n      &lt;/root&gt;\n    &lt;/mxGraphModel&gt;\n  &lt;/diagram&gt;\n&lt;/mxfile&gt;\n&quot;}">
+                                        </div>
+                                        <script type="text/javascript"
+                                            src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" aria-expanded="false">
+                            <span class="accordion-title">Level Design &amp; Implementation</span>
+                            <span class="accordion-icon">+</span>
+                        </button>
+                        <div class="accordion-content">
+                            <ul>
+                                <li>Puzzle blockouts to final art pass handoff</li>
+                                <li>Scripting of interactive elements and triggers</li>
+                                <li>Playtesting and iteration based on feedback</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" aria-expanded="false">
+                            <span class="accordion-title">Production &amp; Release</span>
+                            <span class="accordion-icon">+</span>
+                        </button>
+                        <div class="accordion-content">
+                            <ul>
+                                <li>Managed <strong>Steam deployment</strong> workflow (store page setup, build uploads,
+                                    version control, testing branches)</li>
+                                <li>Release checklists and QA sign‑off</li>
+                                <li>Build automation and versioning</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
-                <h2 class="section-heading">Technical Design Diagram</h2>
-                <div class="diagram-wrapper">
-                    <iframe
-                        src="https://app.diagrams.net/#G1ntcRY-IghIe0W3kTKUGW9XI1bzKW2Dx9#%7B%22pageId%22%3A%22sPX0HjRt7P7a30QzXF_5%22%7D"
-                        title="Technical Design Diagram" loading="lazy"></iframe>
-                </div>
+
 
                 <h2 class="section-heading">Screenshots</h2>
                 <div class="media-grid">
@@ -461,86 +640,6 @@
                         <div class="media-caption">Puzzle mechanic demonstration</div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <section class="code-section">
-            <div class="container">
-                <h2 class="section-heading">Code Highlights</h2>
-
-                <div class="code-snippet">
-                    <pre><code>// Player Movement Controller
-public class PlayerController : MonoBehaviour
-{
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float jumpForce = 10f;
-    private Rigidbody rb;
-    private bool isGrounded;
-
-    void Start()
-    {
-        rb = GetComponent&lt;Rigidbody&gt;();
-    }
-
-    void Update()
-    {
-        HandleMovement();
-        HandleJump();
-    }
-
-    private void HandleMovement()
-    {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        
-        Vector3 movement = new Vector3(horizontal, 0f, vertical);
-        transform.Translate(movement * moveSpeed * Time.deltaTime);
-    }
-
-    private void HandleJump()
-    {
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-    }
-}</code></pre>
-                </div>
-                <p class="code-caption">Core player movement system with smooth controls and jump mechanics</p>
-
-                <div class="code-snippet">
-                    <pre><code>// Puzzle Interaction System
-public class PuzzleElement : MonoBehaviour
-{
-    [SerializeField] private PuzzleType puzzleType;
-    [SerializeField] private GameObject targetObject;
-    private bool isActivated = false;
-
-    public void Activate()
-    {
-        if (!isActivated)
-        {
-            isActivated = true;
-            TriggerPuzzleEffect();
-            PuzzleManager.Instance.CheckPuzzleCompletion();
-        }
-    }
-
-    private void TriggerPuzzleEffect()
-    {
-        switch (puzzleType)
-        {
-            case PuzzleType.Platform:
-                targetObject.GetComponent&lt;MovingPlatform&gt;().Activate();
-                break;
-            case PuzzleType.Door:
-                targetObject.GetComponent&lt;Door&gt;().Open();
-                break;
-        }
-    }
-}</code></pre>
-                </div>
-                <p class="code-caption">Modular puzzle system allowing for flexible level design</p>
             </div>
         </section>
 
@@ -593,6 +692,135 @@ public class PuzzleElement : MonoBehaviour
                 if (current) {
                     moveIndicatorTo(current);
                 }
+            });
+        })();
+
+        // Accordion behavior for "My Contributions" (smooth one-piece animation)
+        (function () {
+            const accordion = document.getElementById('contrib-accordion');
+            if (!accordion) return;
+
+            const items = Array.from(accordion.querySelectorAll('.accordion-item'));
+
+            function closeItem(it) {
+                const content = it.querySelector('.accordion-content');
+                const hdr = it.querySelector('.accordion-header');
+                const ic = it.querySelector('.accordion-icon');
+                if (!content) return;
+                // Set explicit height from current auto/px to enable transition
+                content.style.height = content.scrollHeight + 'px';
+                // force reflow
+                void content.offsetHeight;
+                content.style.height = '0px';
+                it.classList.remove('open');
+                if (hdr) hdr.setAttribute('aria-expanded', 'false');
+                if (ic) ic.textContent = '+';
+            }
+
+            function openItem(it) {
+                const content = it.querySelector('.accordion-content');
+                const hdr = it.querySelector('.accordion-header');
+                const ic = it.querySelector('.accordion-icon');
+                if (!content) return;
+                content.style.height = content.scrollHeight + 'px';
+                it.classList.add('open');
+                if (hdr) hdr.setAttribute('aria-expanded', 'true');
+                const onEnd = (e) => {
+                    if (e.propertyName === 'height') {
+                        content.style.height = 'auto';
+                        content.removeEventListener('transitionend', onEnd);
+                    }
+                };
+                content.addEventListener('transitionend', onEnd);
+            }
+
+            items.forEach((item) => {
+                const header = item.querySelector('.accordion-header');
+                if (!header) return;
+
+                header.addEventListener('click', () => {
+                    const isOpen = item.classList.contains('open');
+                    // Close all items first (single-open behavior)
+                    items.forEach(i => {
+                        if (i !== item && i.classList.contains('open')) closeItem(i);
+                    });
+
+                    if (isOpen) {
+                        closeItem(item);
+                    } else {
+                        // Prepare height from 0
+                        const content = item.querySelector('.accordion-content');
+                        if (content) {
+                            content.style.height = '0px';
+                            // force reflow
+                            void content.offsetHeight;
+                        }
+                        openItem(item);
+                    }
+                });
+            });
+        })();
+
+        // Sub-accordion behavior inside panels (e.g., Lead Programmer) with smooth height animation
+        (function () {
+            const subAccordions = Array.from(document.querySelectorAll('#contrib-accordion .sub-accordion'));
+            if (!subAccordions.length) return;
+
+            function closeSub(it) {
+                const content = it.querySelector('.sub-content');
+                const hdr = it.querySelector('.sub-header');
+                const ic = it.querySelector('.sub-icon');
+                if (!content) return;
+                content.style.height = content.scrollHeight + 'px';
+                void content.offsetHeight;
+                content.style.height = '0px';
+                it.classList.remove('open');
+                if (hdr) hdr.setAttribute('aria-expanded', 'false');
+                if (ic) ic.textContent = '+';
+            }
+
+            function openSub(it) {
+                const content = it.querySelector('.sub-content');
+                const hdr = it.querySelector('.sub-header');
+                const ic = it.querySelector('.sub-icon');
+                if (!content) return;
+                content.style.height = content.scrollHeight + 'px';
+                it.classList.add('open');
+                if (hdr) hdr.setAttribute('aria-expanded', 'true');
+                const onEnd = (e) => {
+                    if (e.propertyName === 'height') {
+                        content.style.height = 'auto';
+                        content.removeEventListener('transitionend', onEnd);
+                    }
+                };
+                content.addEventListener('transitionend', onEnd);
+            }
+
+            subAccordions.forEach(sa => {
+                const items = Array.from(sa.querySelectorAll('.sub-item'));
+                items.forEach(item => {
+                    const header = item.querySelector('.sub-header');
+                    if (!header) return;
+
+                    header.addEventListener('click', () => {
+                        const isOpen = item.classList.contains('open');
+                        // Close siblings (single-open per sub-accordion)
+                        items.forEach(i => {
+                            if (i !== item && i.classList.contains('open')) closeSub(i);
+                        });
+
+                        if (isOpen) {
+                            closeSub(item);
+                        } else {
+                            const content = item.querySelector('.sub-content');
+                            if (content) {
+                                content.style.height = '0px';
+                                void content.offsetHeight;
+                            }
+                            openSub(item);
+                        }
+                    });
+                });
             });
         })();
     </script>
