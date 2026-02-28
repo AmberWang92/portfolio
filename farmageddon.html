@@ -174,8 +174,12 @@
                                                 validation, automatic character switching on landing</li>
                                         </ul>
                                         <div class="gist-container">
-                                            <script
-                                                src="https://gist.github.com/AmberWang92/120b324db4cbee71f67da7648089cbfc.js"></script>
+                                            <iframe id="gist-frame" class="gist-frame"
+                                                data-gist-src="https://gist.github.com/AmberWang92/120b324db4cbee71f67da7648089cbfc.js"
+                                                style="width:100%;border:none;min-height:200px;max-height:500px;border-radius:8px;overflow-y:auto;display:block;"
+                                                title="Code snippet"
+                                                sandbox="allow-scripts allow-same-origin allow-top-navigation-by-user-activation">
+                                            </iframe>
                                         </div>
                                     </div>
                                 </div>
@@ -544,6 +548,71 @@
                             if (content) {
                                 content.style.height = '0px';
                                 void content.offsetHeight;
+                            }
+                            // Lazy-load Gist into iframe on first open
+                            const gistFrame = item.querySelector('iframe.gist-frame[data-gist-src]');
+                            if (gistFrame) {
+                                const src = gistFrame.getAttribute('data-gist-src');
+                                gistFrame.removeAttribute('data-gist-src');
+                                const doc = gistFrame.contentDocument || gistFrame.contentWindow.document;
+                                doc.open();
+                                doc.write(`<!DOCTYPE html><html><head>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1e1e1e; }
+  .gist .gist-file { border: none !important; border-radius: 0 !important; margin: 0; }
+  .gist .gist-data { background: #1e1e1e !important; border-bottom: none !important; }
+  .gist-meta { display: none !important; }
+  #scroll-track {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    background: rgba(255,255,255,0.08);
+    z-index: 999;
+  }
+  #scroll-thumb {
+    position: absolute;
+    right: 0;
+    width: 5px;
+    background: #5aa7e6;
+    border-radius: 3px;
+    min-height: 24px;
+    transition: top 0.05s linear;
+  }
+</style>
+</head><body>
+<div id="scroll-track"><div id="scroll-thumb"></div></div>
+<script src="${src}"><\/script>
+<script>
+  (function () {
+    var thumb = document.getElementById('scroll-thumb');
+    function update() {
+      var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var viewHeight = document.documentElement.clientHeight;
+      if (scrollHeight <= 0) { thumb.style.height = '100%'; thumb.style.top = '0'; return; }
+      var ratio = viewHeight / document.documentElement.scrollHeight;
+      var thumbH = Math.max(ratio * viewHeight, 24);
+      var thumbTop = (scrollTop / scrollHeight) * (viewHeight - thumbH);
+      thumb.style.height = thumbH + 'px';
+      thumb.style.top = thumbTop + 'px';
+    }
+    document.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    setTimeout(update, 500);
+  })();
+<\/script>
+</body></html>`);
+                                doc.close();
+                                // Auto-resize iframe to fit content after Gist loads
+                                gistFrame.addEventListener('load', () => {
+                                    try {
+                                        const h = gistFrame.contentDocument.body.scrollHeight;
+                                        if (h > 0) gistFrame.style.height = Math.min(h, 500) + 'px';
+                                    } catch (_) { }
+                                });
                             }
                             openSub(item);
                         }
