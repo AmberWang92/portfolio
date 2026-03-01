@@ -308,6 +308,16 @@ nav {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+.description-layout .about-video {
+    flex: 0 0 440px;
+    width: 100%;
+    max-width: 440px;
+    border-radius: 18px;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    align-self: flex-start;
+}
+
 .description-text {
     flex: 1 1 360px;
 }
