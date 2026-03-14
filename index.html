@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xinyue Wang - Resume & Portfolio</title>
     <link rel="icon" type="image/gif" href="pictures/pixal-animation.gif">
+    <link rel="stylesheet" href="css/skill-breaker.css">
     <style>
         /* --- 1. 全局变量与重置 (CSS Variables & Reset) --- */
         :root {
@@ -211,44 +212,7 @@
             justify-content: center;
             text-align: center;
             background: linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
-        }
-
-        .hero-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-
-        .hero-content p {
-            font-size: 1.5rem;
-            color: var(--muted-text);
-            margin-bottom: 30px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: var(--accent-color);
-            color: #fff;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .btn:hover {
-            background: var(--btn-hover-bg);
-        }
-
-        /* --- 5. 关于我 (About) --- */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 50px;
-            align-items: center;
-        }
-
-        .profile-img {
-            width: 100%;
-            height: 300px;
+            position: relative;
             background-color: var(--profile-placeholder-bg);
             /* 占位符背景 */
             border-radius: 10px;
@@ -497,12 +461,20 @@
         </div>
     </header>
 
-    <!-- Hero 区域 -->
-    <section class="hero">
-        <div class="container hero-content">
-            <h1>Hello, I'm Xinyue Wang</h1>
-            <p>Game Designer / Level Designer / Game Developer</p>
-            <a href="#portfolio" class="btn">View My Work</a>
+    <!-- Hero 区域 - Skill Breaker Game -->
+    <section class="hero" id="hero-section">
+        <div class="hero-game-container">
+            <canvas id="skill-breaker-canvas"></canvas>
+            
+            <!-- Static fallback for reduced motion -->
+            <div id="static-hero" class="hero-content" style="display: none;">
+                <h1>Hello, I'm Xinyue Wang</h1>
+                <p>Game Designer / Level Designer / Game Developer</p>
+                <a href="#portfolio" class="btn">View My Work</a>
+            </div>
+            
+            <!-- CTA Button (shown after game completion) -->
+            <a href="#portfolio" id="hero-cta-button" class="btn hero-cta-hidden">View My Work</a>
         </div>
     </section>
 
@@ -839,6 +811,9 @@
             </p>
         </div>
     </footer>
+
+    <!-- Skill Breaker Game Script -->
+    <script src="js/skill-breaker.js"></script>
 
     <script>
         (function () {
