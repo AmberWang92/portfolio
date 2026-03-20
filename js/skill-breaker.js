@@ -35,16 +35,90 @@ class SkillBreakerGame {
         this.confettiFrameId = null;
         this.lastConfettiTick = null;
 
+        // Base dimensions for responsive scaling
+        this.basePaddleWidth = 120;
+        this.basePaddleHeight = 15;
+        this.baseBallRadius = 8;
+        this.ballLaunched = false;
+        this.ballLaunchTimeout = null;
+
         // Check for reduced motion preference
         this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         this.init();
     }
 
+    applyResponsiveScale() {
+        if (!this.canvas) return;
+        const scale = this.getResponsiveScale();
+        this.currentScale = scale;
+
+        if (this.paddle) {
+            const prevCenter = this.paddle.x + this.paddle.width / 2;
+            this.paddle.width = Math.max(70, this.basePaddleWidth * scale);
+            this.paddle.height = Math.max(10, this.basePaddleHeight * scale);
+            this.paddle.y = this.canvas.height - Math.max(35, 70 * scale);
+            this.paddle.x = prevCenter - this.paddle.width / 2;
+            if (this.paddle.x < 0) this.paddle.x = 0;
+            if (this.paddle.x + this.paddle.width > this.canvas.width) {
+                this.paddle.x = this.canvas.width - this.paddle.width;
+            }
+        }
+
+        if (this.ball) {
+            this.ball.radius = Math.max(5, this.baseBallRadius * scale);
+            if (!this.ballLaunched) {
+                this.anchorBallToPaddle();
+            }
+        }
+    }
+
+    anchorBallToPaddle(options = {}) {
+        if (!this.paddle || !this.ball) return;
+        const { resetVelocity = false } = options;
+        this.ball.x = this.paddle.x + this.paddle.width / 2;
+        this.ball.y = this.paddle.y - this.ball.radius - 4;
+        if (resetVelocity) {
+            this.ball.velocityX = 0;
+            this.ball.velocityY = 0;
+        }
+        this.ballLaunched = false;
+    }
+
+    scheduleBallLaunch(delay = 2000) {
+        this.clearBallLaunchTimer();
+        if (delay == null) return;
+        this.ballLaunchTimeout = setTimeout(() => {
+            this.launchBallFromPaddle();
+        }, delay);
+    }
+
+    clearBallLaunchTimer() {
+        if (this.ballLaunchTimeout) {
+            clearTimeout(this.ballLaunchTimeout);
+            this.ballLaunchTimeout = null;
+        }
+    }
+
+    launchBallFromPaddle() {
+        if (!this.ball || this.ballLaunched) return;
+        const speed = this.ball.speed || 6;
+        const angleOffset = (Math.random() - 0.5) * (Math.PI / 6);
+        const angle = -Math.PI / 2 + angleOffset;
+        this.ball.velocityX = speed * Math.cos(angle);
+        this.ball.velocityY = speed * Math.sin(angle);
+        if (this.ball.velocityY > -2) {
+            this.ball.velocityY = -Math.abs(speed * 0.85);
+        }
+        this.ballLaunched = true;
+        this.clearBallLaunchTimer();
+    }
+
     init() {
         this.setupCanvas();
         this.setupGameObjects();
         this.setupEventListeners();
+        this.scheduleBallLaunch(2000);
 
         if (this.prefersReducedMotion) {
             this.showStaticHero();
@@ -60,14 +134,13 @@ class SkillBreakerGame {
             this.canvas.width = container.clientWidth;
             this.canvas.height = container.clientHeight;
 
-            if (this.paddle) {
-                this.paddle.x = this.canvas.width / 2 - this.paddle.width / 2;
-                this.paddle.y = this.canvas.height - 60;
-            }
             if (this.ball) {
                 this.ball.x = this.canvas.width / 2;
                 this.ball.y = this.canvas.height / 2;
             }
+
+            this.applyResponsiveScale();
+
             if (this.blocks) {
                 this.blocks = this.createBlocks();
             }
@@ -79,10 +152,10 @@ class SkillBreakerGame {
 
     setupGameObjects() {
         this.paddle = {
-            x: this.canvas.width / 2 - 60,
+            x: this.canvas.width / 2 - this.basePaddleWidth / 2,
             y: this.canvas.height - 60,
-            width: 120,
-            height: 15,
+            width: this.basePaddleWidth,
+            height: this.basePaddleHeight,
             speed: 8,
             dx: 0
         };
@@ -90,24 +163,26 @@ class SkillBreakerGame {
         this.ball = {
             x: this.canvas.width / 2,
             y: this.canvas.height / 2,
-            radius: 8,
+            radius: this.baseBallRadius,
             velocityX: 6,
             velocityY: -6,
             speed: 6
         };
 
+        this.applyResponsiveScale();
         this.blocks = this.createBlocks();
+        this.anchorBallToPaddle({ resetVelocity: true });
     }
 
     getResponsiveScale() {
         if (!this.canvas) return 1;
         const baseWidth = 640;
-        const minScale = 0.55;
+        const minScale = 0.4;
         return Math.max(minScale, Math.min(1, this.canvas.width / baseWidth));
     }
 
     createBlocks() {
-        const scale = this.getResponsiveScale();
+        const scale = this.currentScale ?? this.getResponsiveScale();
         this.currentScale = scale;
         const blocks = [];
         const centerX = this.canvas.width / 2;
@@ -118,7 +193,7 @@ class SkillBreakerGame {
         const titleY = startY;
         const titleBlockWidth = 110 * scale;
         const titleBlockHeight = 52 * scale;
-        const titleFontSize = Math.max(16, 24 * scale);
+        const titleFontSize = Math.max(12, 24 * scale);
         const titleTotalWidth = titleTexts.length * titleBlockWidth + (titleTexts.length - 1) * gap;
         let titleX = centerX - titleTotalWidth / 2;
 
@@ -140,7 +215,7 @@ class SkillBreakerGame {
         const roleY = titleY + titleBlockHeight + 40 * scale;
         const roleBlockWidth = 150 * scale;
         const roleBlockHeight = 46 * scale;
-        const roleFontSize = Math.max(13, 18 * scale);
+        const roleFontSize = Math.max(10, 18 * scale);
         const roleTotalWidth = roleTexts.length * roleBlockWidth + (roleTexts.length - 1) * gap;
         let roleX = centerX - roleTotalWidth / 2;
 
@@ -171,6 +246,9 @@ class SkillBreakerGame {
             if (this.paddle.x + this.paddle.width > this.canvas.width) {
                 this.paddle.x = this.canvas.width - this.paddle.width;
             }
+            if (!this.ballLaunched) {
+                this.anchorBallToPaddle();
+            }
         });
 
         this.canvas.addEventListener('touchmove', (e) => {
@@ -183,6 +261,9 @@ class SkillBreakerGame {
             if (this.paddle.x < 0) this.paddle.x = 0;
             if (this.paddle.x + this.paddle.width > this.canvas.width) {
                 this.paddle.x = this.canvas.width - this.paddle.width;
+            }
+            if (!this.ballLaunched) {
+                this.anchorBallToPaddle();
             }
         }, { passive: false });
 
@@ -203,6 +284,9 @@ class SkillBreakerGame {
             if (this.paddle.x < 0) this.paddle.x = 0;
             if (this.paddle.x + this.paddle.width > this.canvas.width) {
                 this.paddle.x = this.canvas.width - this.paddle.width;
+            }
+            if (!this.ballLaunched) {
+                this.anchorBallToPaddle();
             }
         };
     }
