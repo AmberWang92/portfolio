@@ -129,6 +129,10 @@
                                         <span class="sub-icon">+</span>
                                     </button>
                                     <div class="sub-content">
+                                        <p style="margin: 12px 0 12px 3%;">
+                                            <a href="files/Technical Design.svg" target="_blank" rel="noopener noreferrer"
+                                                style="display:inline-block;padding:8px 12px;border-radius:8px;background:#5aa7e6;color:#ffffff;text-decoration:none;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.15);">View the Diagram in New Tab</a>
+                                        </p>
                                         <div class="svg-zoom-container"
                                             style="position:relative;width:100%;max-width:900px;height:600px;overflow:hidden;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.15);cursor:grab;">
                                             <img src="files/Technical Design.svg" alt="Technical Design Diagram"
@@ -680,7 +684,6 @@
             let rafId = null;
 
             container.style.touchAction = 'none';
-            img.style.willChange = 'transform';
             img.draggable = false;
             img.addEventListener('dragstart', (e) => e.preventDefault());
 
@@ -727,7 +730,7 @@
 
             function render() {
                 rafId = null;
-                img.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
+                img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
             }
 
             function requestRender() {
