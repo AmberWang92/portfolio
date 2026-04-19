@@ -166,24 +166,70 @@
                                     </button>
                                     <div class="sub-content">
                                         <ul style="margin-bottom: 10px; line-height: 1.8;">
+                                            <li><strong>Game Programming Design Patterns - Singleton: </strong>To ensure a single, globally accessible manager for detecting whether the player is using a keyboard/mouse or a gamepad, 
+                                                I implemented the singleton design pattern. This prevents duplicate instances and provides a persistent point of access for any script that needs to update UI prompts 
+                                                or change behavior based on the current input device.</li>
+                                        </ul>
+                                        <div class="code-container" style="margin-top: 6px;">
+                                            <pre><code><span class="code-keyword">using</span> <span class="code-type">UnityEngine</span>;
+<span class="code-keyword">using</span> <span class="code-type">System</span>;
+
+<span class="code-keyword">public</span> <span class="code-keyword">class</span> <span class="code-type">InputDeviceDetector</span> : <span class="code-type">MonoBehaviour</span>
+{
+    <span class="code-comment">// 1. Public static property to hold the single instance of this class.</span>
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-type">InputDeviceDetector</span> Instance { <span class="code-keyword">get</span>; <span class="code-keyword">private</span> <span class="code-keyword">set</span>; }
+
+    <span class="code-comment">// Event for other scripts to subscribe to.</span>
+    <span class="code-keyword">public</span> <span class="code-keyword">event</span> <span class="code-type">Action</span>&lt;<span class="code-type">InputDevice</span>&gt; OnInputDeviceChanged;
+
+    <span class="code-keyword">public</span> <span class="code-keyword">enum</span> <span class="code-type">InputDevice</span> { KeyboardMouse, Gamepad }
+    <span class="code-keyword">public</span> <span class="code-type">InputDevice</span> CurrentDevice { <span class="code-keyword">get</span>; <span class="code-keyword">private</span> <span class="code-keyword">set</span>; }
+
+    <span class="code-keyword">private</span> <span class="code-keyword">void</span> Awake()
+    {
+        <span class="code-comment">// 2. Singleton enforcement logic.</span>
+        <span class="code-keyword">if</span> (Instance == <span class="code-keyword">null</span>)
+        {
+            <span class="code-comment">// If no instance exists, this becomes the instance.</span>
+            Instance = <span class="code-keyword">this</span>;
+            
+            <span class="code-comment">// 3. Persist this object across scene loads.</span>
+            DontDestroyOnLoad(gameObject);
+        }
+        <span class="code-keyword">else</span>
+        {
+            <span class="code-comment">// If an instance already exists, destroy this new one.</span>
+            Destroy(gameObject);
+        }
+    }
+
+    <span class="code-comment">// ... (rest of the input detection logic)</span>
+}</code></pre>
+                                        </div>
+                                        <ul style="margin-bottom: 10px; line-height: 1.8;">
                                             <li><strong>Game Programming Mathematics: </strong>After the Spider launchend by the catapult, it moves and orients along a spline path.
                                                 The codes below shows the implementation to move the spider along a path,
                                                 and rotate it so it naturally follows the path direction, while optionally staying upright.</li>
                                         </ul>
                                         <div class="code-container">
-                                            <pre><code><span class="code-type">float</span> et = ease.Evaluate(t);
+                                            <pre><code><span class="code-comment">// Evaluate the spline at time 't' using an easing curve for smooth motion</span>
+<span class="code-type">float</span> et = ease.Evaluate(t);
 
+<span class="code-comment">// Get the position, tangent (direction), and up-vector from the spline</span>
 <span class="code-type">Vector3</span> pos = flightSpline.EvaluatePosition(et);
 <span class="code-type">Vector3</span> tan = flightSpline.EvaluateTangent(et);
 <span class="code-type">Vector3</span> up = keepUpright ? <span class="code-type">Vector3</span>.up : flightSpline.EvaluateUpVector(et);
 
+<span class="code-comment">// --- Apply position and rotation to the transform ---</span>
 spider.transform.position = pos;
 
+<span class="code-comment">// Only update rotation if the tangent is valid (not a zero vector)</span>
 <span class="code-keyword">if</span> (faceAlongTangent && tan.sqrMagnitude > <span class="code-number">0.0001f</span>)
 {
+    <span class="code-comment">// Orient the spider to face along the spline's tangent</span>
     spider.transform.rotation = <span class="code-type">Quaternion</span>.LookRotation(
         tan.normalized,
-        up.sqrMagnitude > <span class="code-number">0.0001f</span> ? up.normalized : <span class="code-type">Vector3</span>.up
+        up.sqrMagnitude > <span class="code-number">0.0001f</span> ? up.normalized : <span class="code-type">Vector3</span>.up <span class="code-comment">// Use world up if spline's up is invalid</span>
     );
 }</code></pre>
                                         </div>
@@ -191,10 +237,12 @@ spider.transform.position = pos;
                                             <li><strong>Game Programming Physics: </strong>Rigidbody setup and movement force handling for stable character control, including horizontal velocity updates and jump impulse.</li>
                                         </ul>
                                         <div class="code-container" style="margin-top: 6px;">
-                                            <pre><code><span class="code-keyword">protected</span> <span class="code-type">Rigidbody</span> rb;
+                                            <pre><code><span class="code-comment">// Reference to the character's Rigidbody component</span>
+<span class="code-keyword">protected</span> <span class="code-type">Rigidbody</span> rb;
 
 <span class="code-keyword">private</span> <span class="code-keyword">void</span> InitializeComponents()
 {
+    <span class="code-comment">// Get the Rigidbody component attached to this GameObject</span>
     rb = GetComponent&lt;<span class="code-type">Rigidbody</span>&gt;();
 }
 
@@ -202,6 +250,7 @@ spider.transform.position = pos;
 {
     <span class="code-keyword">if</span> (rb != <span class="code-keyword">null</span>)
     {
+        <span class="code-comment">// Prevent physics from rotating the character (rotation handled by code)</span>
         rb.freezeRotation = <span class="code-keyword">true</span>;
     }
 }
@@ -211,6 +260,7 @@ spider.transform.position = pos;
     <span class="code-keyword">float</span> currentSpeed = CalculateCurrentSpeed();
     <span class="code-type">Vector3</span> targetVelocity = direction * currentSpeed;
 
+    <span class="code-comment">// Update horizontal velocity while preserving vertical velocity (gravity/jumping)</span>
     <span class="code-type">Vector3</span> velocity = rb.linearVelocity;
     velocity.x = targetVelocity.x;
     velocity.z = targetVelocity.z;
@@ -219,6 +269,7 @@ spider.transform.position = pos;
 
 <span class="code-keyword">private</span> <span class="code-keyword">void</span> ResetVerticalVelocity()
 {
+    <span class="code-comment">// Reset vertical velocity to zero (used when grounded)</span>
     <span class="code-type">Vector3</span> velocity = rb.linearVelocity;
     velocity.y = <span class="code-number">0f</span>;
     rb.linearVelocity = velocity;
@@ -226,6 +277,7 @@ spider.transform.position = pos;
 
 <span class="code-keyword">private</span> <span class="code-keyword">void</span> ApplyJumpForce()
 {
+    <span class="code-comment">// Apply an instant upward force for jumping</span>
     rb.AddForce(<span class="code-type">Vector3</span>.up * jumpForce, <span class="code-type">ForceMode</span>.Impulse);
 }</code></pre>
                                         </div>
