@@ -125,7 +125,7 @@
                             <div class="sub-accordion"></div>
                         </div>
                     </div>
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="mr-systems">
                         <button class="accordion-header" aria-expanded="false">
                             <span class="accordion-title">
                                 <span class="dropdown-leading-icon" aria-hidden="true">
@@ -146,11 +146,57 @@
                                 </li>
 
                                 <li><strong>Passthrough-based</strong> spawn positioning</li>
-
-                                <li><strong>MR-compatible shader</strong> development</li>
-
-                                <li>Complete <strong>boss fight</strong> combat loop</li>
+                                <li><strong>Weight-Based</strong> Boss AI system: evaluates possible actions (Idle, Attack, RunAway) and assigns each a dynamic weight based on:
+                                    <ul style="margin-top: 8px; margin-left: 20px;">
+                                        <li>Health level → affects aggression vs passiveness</li>
+                                        <li>Time since last attack → increases attack likelihood over time</li>
+                                        <li>Random variation → prevents predictable behavior</li>
+                                        <li>Damage reaction → temporarily boosts escape behavior</li>
+                                    </ul>
+                                    <p style="margin-top: 8px; margin-bottom: 10px;">The next action is selected using a weighted random function, allowing the boss to behave in a more adaptive and less predictable way.</p>
+                                </li>
                             </ul>
+                            <div class="code-container" style="margin-top: 6px;">
+                                <pre><code><span class="code-comment">// Core decision system for boss behavior</span>
+[Header(<span class="code-string">"Decision Weights"</span>)]
+<span class="code-keyword">public</span> <span class="code-type">float</span> idleWeight = <span class="code-number">0.5f</span>;
+<span class="code-keyword">public</span> <span class="code-type">float</span> attackWeight = <span class="code-number">1.2f</span>;
+<span class="code-keyword">public</span> <span class="code-type">float</span> runAwayWeight = <span class="code-number">1.0f</span>;
+<span class="code-keyword">public</span> <span class="code-type">float</span> attackTimeFactor = <span class="code-number">0.5f</span>;
+
+<span class="code-keyword">void</span> EvaluateNextAction()
+{
+    <span class="code-type">float</span> hpRatio = <span class="code-type">Mathf</span>.Clamp01((<span class="code-type">float</span>)health / maxHealth);
+
+    <span class="code-comment">// --- Calculate utility scores ---</span>
+    <span class="code-type">float</span> idleScore = idleWeight * hpRatio;
+
+    <span class="code-type">float</span> attackScore = attackWeight *
+        <span class="code-type">Mathf</span>.Min(sinceLastAttack * attackTimeFactor, <span class="code-number">2f</span>) *
+        (<span class="code-number">0.5f</span> + <span class="code-number">0.5f</span> * hpRatio);
+
+    <span class="code-type">float</span> runScore = runAwayWeight * <span class="code-type">Random</span>.Range(<span class="code-number">0.1f</span>, <span class="code-number">1.5f</span>);
+
+    <span class="code-comment">// Temporary boost when taking damage</span>
+    <span class="code-keyword">if</span> (runAwayBoost)
+    {
+        <span class="code-type">float</span> decay = <span class="code-number">1f</span> - (runAwayBoostTimer / runAwayBoostDuration);
+        runScore += <span class="code-number">3f</span> * decay;
+    }
+
+    <span class="code-comment">// --- Weighted selection ---</span>
+    <span class="code-type">State</span> next = WeightedRandom(<span class="code-keyword">new</span> <span class="code-type">Dictionary</span>&lt;<span class="code-type">State</span>, <span class="code-type">float</span>&gt;
+    {
+        { <span class="code-type">State</span>.Idle, idleScore },
+        { <span class="code-type">State</span>.Attack, attackScore },
+        { <span class="code-type">State</span>.RunAway, runScore }
+    });
+
+    <span class="code-comment">// --- Apply state change ---</span>
+    <span class="code-keyword">if</span> (next != state)
+        ChangeState(next);
+}</code></pre>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -341,6 +387,37 @@
                     }
                 });
             });
+        })();
+
+        // Handle URL hash to auto-open accordions
+        (function () {
+            function openAccordionForHash() {
+                const hash = window.location.hash;
+                if (!hash) return;
+
+                const target = document.querySelector(hash);
+                if (!target) return;
+
+                // Find if target is an accordion item
+                const accordionItem = target.classList.contains('accordion-item') ? target : target.closest('.accordion-item');
+                if (accordionItem) {
+                    const btn = accordionItem.querySelector('.accordion-header');
+                    if (btn && btn.getAttribute('aria-expanded') !== 'true') {
+                        setTimeout(() => {
+                            btn.click();
+                            // Scroll to the element after opening
+                            setTimeout(() => {
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 400);
+                        }, 100);
+                    }
+                }
+            }
+
+            // Run on page load
+            window.addEventListener('load', openAccordionForHash);
+            // Run when hash changes
+            window.addEventListener('hashchange', openAccordionForHash);
         })();
     </script>
 </body>

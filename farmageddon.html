@@ -150,7 +150,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="sub-item">
+                                <div class="sub-item" id="code-snippet">
                                     <button class="sub-header" aria-expanded="false">
                                         <span class="sub-label">
                                             <span class="dropdown-leading-icon" aria-hidden="true">
@@ -165,28 +165,108 @@
                                         <span class="sub-icon">+</span>
                                     </button>
                                     <div class="sub-content">
-                                        <ul style="margin-bottom: 20px; line-height: 1.8;">
-                                            <li><strong>Advanced Cinematic System:</strong> Demonstrates sophisticated
-                                                cutscene orchestration with multi-phase camera transitions (bag fall →
-                                                spider flight)</li>
-                                            <li><strong>Spline-Based Animation:</strong> Shows mastery of Unity Splines
-                                                for smooth, controlled character movement along predefined paths</li>
-                                            <li><strong>Time Manipulation:</strong> Implements dynamic slow-motion
-                                                effects with smooth blending</li>
-                                            <li><strong>Cinemachine 3.x Integration:</strong> Professional camera
-                                                management with priority systems and dolly synchronization</li>
-                                            <li><strong>State Management:</strong> Complex coroutine-based sequencing
-                                                with proper cleanup and state restoration</li>
-                                            <li><strong>Polish Features:</strong> Audio integration, platform
-                                                validation, automatic character switching on landing</li>
+                                        <ul style="margin-bottom: 10px; line-height: 1.8;">
+                                            <li><strong>Game Programming Mathematics: </strong>After the Spider launchend by the catapult, it moves and orients along a spline path.
+                                                The codes below shows the implementation to move the spider along a path,
+                                                and rotate it so it naturally follows the path direction, while optionally staying upright.</li>
                                         </ul>
-                                        <div class="gist-container">
-                                            <iframe id="gist-frame" class="gist-frame"
-                                                data-gist-src="https://gist.github.com/AmberWang92/120b324db4cbee71f67da7648089cbfc.js"
-                                                style="width:100%;border:none;min-height:200px;max-height:500px;border-radius:8px;overflow-y:auto;display:block;"
-                                                title="Code snippet"
-                                                sandbox="allow-scripts allow-same-origin allow-top-navigation-by-user-activation">
-                                            </iframe>
+                                        <div class="code-container">
+                                            <pre><code><span class="code-type">float</span> et = ease.Evaluate(t);
+
+<span class="code-type">Vector3</span> pos = flightSpline.EvaluatePosition(et);
+<span class="code-type">Vector3</span> tan = flightSpline.EvaluateTangent(et);
+<span class="code-type">Vector3</span> up = keepUpright ? <span class="code-type">Vector3</span>.up : flightSpline.EvaluateUpVector(et);
+
+spider.transform.position = pos;
+
+<span class="code-keyword">if</span> (faceAlongTangent && tan.sqrMagnitude > <span class="code-number">0.0001f</span>)
+{
+    spider.transform.rotation = <span class="code-type">Quaternion</span>.LookRotation(
+        tan.normalized,
+        up.sqrMagnitude > <span class="code-number">0.0001f</span> ? up.normalized : <span class="code-type">Vector3</span>.up
+    );
+}</code></pre>
+                                        </div>
+                                        <ul style="margin: 8px 0 6px; line-height: 1.8;">
+                                            <li><strong>Game Programming Physics: </strong>Rigidbody setup and movement force handling for stable character control, including horizontal velocity updates and jump impulse.</li>
+                                        </ul>
+                                        <div class="code-container" style="margin-top: 6px;">
+                                            <pre><code><span class="code-keyword">protected</span> <span class="code-type">Rigidbody</span> rb;
+
+<span class="code-keyword">private</span> <span class="code-keyword">void</span> InitializeComponents()
+{
+    rb = GetComponent&lt;<span class="code-type">Rigidbody</span>&gt;();
+}
+
+<span class="code-keyword">private</span> <span class="code-keyword">void</span> ConfigureRigidbody()
+{
+    <span class="code-keyword">if</span> (rb != <span class="code-keyword">null</span>)
+    {
+        rb.freezeRotation = <span class="code-keyword">true</span>;
+    }
+}
+
+<span class="code-keyword">private</span> <span class="code-keyword">void</span> ApplyMovementVelocity(<span class="code-type">Vector3</span> direction)
+{
+    <span class="code-keyword">float</span> currentSpeed = CalculateCurrentSpeed();
+    <span class="code-type">Vector3</span> targetVelocity = direction * currentSpeed;
+
+    <span class="code-type">Vector3</span> velocity = rb.linearVelocity;
+    velocity.x = targetVelocity.x;
+    velocity.z = targetVelocity.z;
+    rb.linearVelocity = velocity;
+}
+
+<span class="code-keyword">private</span> <span class="code-keyword">void</span> ResetVerticalVelocity()
+{
+    <span class="code-type">Vector3</span> velocity = rb.linearVelocity;
+    velocity.y = <span class="code-number">0f</span>;
+    rb.linearVelocity = velocity;
+}
+
+<span class="code-keyword">private</span> <span class="code-keyword">void</span> ApplyJumpForce()
+{
+    rb.AddForce(<span class="code-type">Vector3</span>.up * jumpForce, <span class="code-type">ForceMode</span>.Impulse);
+}</code></pre>
+                                        </div>
+                                        <ul style="margin: 8px 0 6px; line-height: 1.8;">
+                                            <li><strong>Game Programming Graphics: </strong>When Mouse gets in a pipe and change the camera 
+                                                from Orbital Follow into a new Spline dolly inside of the pipe, and when Mouse gets out the camera change back.</li>
+                                        </ul>
+                                        <div class="code-container" style="margin-top: 6px;">
+                                            <pre><code><span class="code-comment">// --- get Cinemachine spline-dolly component from tunnelCam and set it up ---</span>
+<span class="code-keyword">if</span> (tunnelCam != <span class="code-keyword">null</span>)
+{
+   tunnelSplineDolly = tunnelCam.GetComponent&lt;<span class="code-type">CinemachineSplineDolly</span>&gt;();
+    <span class="code-keyword">if</span> (tunnelSplineDolly == <span class="code-keyword">null</span>)
+        Debug.LogWarning(<span class="code-string">"Tunnel cam has no CinemachineSplineDolly component in its pipeline!"</span>);
+    <span class="code-keyword">else</span>
+    {
+        <span class="code-comment">// ensure the dolly uses the same spline (optional - can be set in inspector too)</span>
+        tunnelSplineDolly.Spline = activeSpline;
+        tunnelSplineDolly.PositionUnits = PathIndexUnit.Normalized;
+        tunnelSplineDolly.CameraPosition = <span class="code-number">0f</span>;
+        <span class="code-comment">// if AutomaticDolly is enabled in inspector, set it to None or handle accordingly</span>
+    }
+
+    <span class="code-comment">// raise tunnel camera priority to become active (Cinemachine will blend)</span>
+    tunnelCam.Priority = Mathf.Max(normalCamOriginalPriority, tunnelCamOriginalPriority) + cameraPriorityBoost;
+    <span class="code-keyword">if</span> (normalCam != <span class="code-keyword">null</span>) normalCam.Priority = normalCamOriginalPriority; <span class="code-comment">// ensure normalCam lower</span>
+}
+
+<span class="code-comment">// --- sync Cinemachine Spline Dolly ---</span>
+<span class="code-keyword">if</span> (tunnelSplineDolly != <span class="code-keyword">null</span>)
+{
+    <span class="code-comment">// make sure Dolly interprets CameraPosition as 0..1</span>
+    tunnelSplineDolly.PositionUnits = PathIndexUnit.Normalized;
+    <span class="code-comment">// set the camera along the spline (CameraPosition is float)</span>
+    tunnelSplineDolly.CameraPosition = splineT;
+}
+
+<span class="code-keyword">if</span> (splineT >= <span class="code-number">1f</span>)
+{
+    ExitTunnel();
+}</code></pre>
                                         </div>
                                     </div>
                                 </div>
@@ -838,6 +918,47 @@
             } else {
                 img.addEventListener('load', resetView, { once: true });
             }
+        })();
+
+        // Handle URL hash to auto-open accordions
+        (function () {
+            function openAccordionForHash() {
+                const hash = window.location.hash;
+                if (!hash) return;
+
+                const target = document.querySelector(hash);
+                if (!target) return;
+
+                // Find parent accordion item
+                const parentAccordionItem = target.closest('.accordion-item');
+                if (parentAccordionItem) {
+                    const parentBtn = parentAccordionItem.querySelector('.accordion-header');
+                    if (parentBtn && parentBtn.getAttribute('aria-expanded') !== 'true') {
+                        parentBtn.click();
+                    }
+                }
+
+                // Find parent sub-item
+                const parentSubItem = target.closest('.sub-item');
+                if (parentSubItem) {
+                    const subBtn = parentSubItem.querySelector('.sub-header');
+                    if (subBtn && subBtn.getAttribute('aria-expanded') !== 'true') {
+                        // Wait for parent accordion to open first
+                        setTimeout(() => {
+                            subBtn.click();
+                            // Scroll to the element after opening
+                            setTimeout(() => {
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 400);
+                        }, 400);
+                    }
+                }
+            }
+
+            // Run on page load
+            window.addEventListener('load', openAccordionForHash);
+            // Run when hash changes
+            window.addEventListener('hashchange', openAccordionForHash);
         })();
     </script>
 
